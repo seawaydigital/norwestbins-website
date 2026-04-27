@@ -112,6 +112,10 @@ assert.ok(css.includes("position: sticky"), "Expected sticky behavior for mobile
 assert.ok(css.includes(".snow-services-grid"), "Missing expanded snow service grid styles");
 assert.ok(css.includes(".snow-stats"), "Missing expanded snow stats styles");
 assert.ok(js.includes("navToggle"), "Missing mobile nav toggle script");
+assert.ok(js.includes("navLinks"), "Missing primary nav link collection");
+assert.ok(js.includes("setActiveNav"), "Missing active nav updater");
+assert.ok(js.includes("IntersectionObserver"), "Missing scroll spy observer");
+assert.ok(js.includes("sectionObserver"), "Missing section observer setup");
 assert.ok(js.includes("mailto:service@norwestbins.ca"), "Missing quote form mailto fallback");
 
 console.log("Static site verification passed.");

@@ -1,6 +1,16 @@
 const navToggle = document.querySelector("#navToggle");
 const primaryNav = document.querySelector("#primaryNav");
 const quoteForm = document.querySelector("#quoteForm");
+const navLinks = [...document.querySelectorAll(".primary-nav a[href^='#']")];
+const navSections = navLinks
+  .map((link) => document.querySelector(link.getAttribute("href")))
+  .filter(Boolean);
+
+const setActiveNav = (sectionId) => {
+  navLinks.forEach((link) => {
+    link.classList.toggle("active", link.getAttribute("href") === `#${sectionId}`);
+  });
+};
 
 if (navToggle && primaryNav) {
   navToggle.addEventListener("click", () => {
@@ -16,6 +26,40 @@ if (navToggle && primaryNav) {
       navToggle.setAttribute("aria-label", "Open navigation");
     }
   });
+}
+
+if (navLinks.length && navSections.length) {
+  if ("IntersectionObserver" in window) {
+    const sectionObserver = new IntersectionObserver(
+      (entries) => {
+        const visibleEntries = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+
+        if (visibleEntries[0]) {
+          setActiveNav(visibleEntries[0].target.id);
+        }
+      },
+      {
+        rootMargin: "-25% 0px -55% 0px",
+        threshold: [0.1, 0.35, 0.6],
+      }
+    );
+
+    navSections.forEach((section) => sectionObserver.observe(section));
+  } else {
+    const updateActiveNavFromScroll = () => {
+      const currentSection = navSections.reduce((current, section) => {
+        const sectionTop = section.getBoundingClientRect().top;
+        return sectionTop <= window.innerHeight * 0.35 ? section : current;
+      }, navSections[0]);
+
+      setActiveNav(currentSection.id);
+    };
+
+    window.addEventListener("scroll", updateActiveNavFromScroll, { passive: true });
+    updateActiveNavFromScroll();
+  }
 }
 
 if (quoteForm) {
